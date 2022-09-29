@@ -8,20 +8,6 @@ import requests
 
 import Models
 
-"""
-APP_ID = "3079e919-8f04-41b7-8b97-5694679bd4f3"
-SECRET = "23379d03-b2a5-4dd2-a4d0-233b3b40588f"
-SECRET = "v-Z8Q~iy~vA77IarV5izSqG0e3uX-qBtItFHudd2"
-# "Notes.Create", "Notes.Read", "Notes.Read.All", "Notes.ReadWrite", "Notes.ReadWrite.All", "Notes.ReadWrite.CreatedByApp"
-# SCOPES = ['']
-SCOPES = ["Notes.Create", "Notes.Read", "Notes.Read.All", "Notes.ReadWrite", "Notes.ReadWrite.All", "Notes.ReadWrite.CreatedByApp"]
-
-AUTHORITY_URL = "https://login.microsoftonline.com/consumers/"
-base_url = "https://graph.microsoft.com/v1.0/"
-endpoint = base_url + "me"
-"""
-
-
 class OneNoteManager(object):
 
     def __init__(self, token=None):
@@ -152,9 +138,9 @@ class OneNoteManager(object):
         self.__token = token
 
 
-    __APP_ID = "3079e919-8f04-41b7-8b97-5694679bd4f3"
-    __SECRET = "v-Z8Q~iy~vA77IarV5izSqG0e3uX-qBtItFHudd2"
-    __SCOPES = ["Notes.Create", "Notes.Read", "Notes.Read.All", "Notes.ReadWrite", "Notes.ReadWrite.All", "Notes.ReadWrite.CreatedByApp"]
+    __APP_ID = "Enter app id"
+    __SECRET = "Enter secret"
+    __SCOPES = []
 
     __AUTHORITY_URL = "https://login.microsoftonline.com/consumers/"
     __base_url = "https://graph.microsoft.com/v1.0/"
