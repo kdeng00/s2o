@@ -1,15 +1,15 @@
 {
     "token": "some_token",
-    "secret": "",
-    "app_id": "",
-    "mode": "",
-    "scopes": [""],
-    "authority_url": "",
-    "base_url": "",
+    "secret": "some secret",
+    "app_id": "sdf348thg348fh3f",
+    "mode": "token",
+    "scopes": ["Create", "Read"],
+    "authority_url": "https://some-link.com",
+    "base_url": "https://some-other-link.com",
     "vendors": {
         "simplenote": {
-            "username": "",
-            "password": ""
+            "username": "me",
+            "password": "who"
         }
     }
 }
