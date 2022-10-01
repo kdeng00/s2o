@@ -1,0 +1,8 @@
+{
+    "token": "some_token",
+    "secret": "",
+    "app_id": "",
+    "scopes": [""],
+    "authority_url": "",
+    "base_url": ""
+}
