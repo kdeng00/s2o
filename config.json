@@ -2,7 +2,14 @@
     "token": "some_token",
     "secret": "",
     "app_id": "",
+    "mode": "",
     "scopes": [""],
     "authority_url": "",
-    "base_url": ""
+    "base_url": "",
+    "vendors": {
+        "simplenote": {
+            "username": "",
+            "password": ""
+        }
+    }
 }
