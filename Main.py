@@ -189,26 +189,12 @@ def load_config():
     dump = json.dumps(json_data)
 
     loaded = json.loads(dump)
-    # config = Models.Config(**json.loads((json_data)))
     config = Models.Config(**loaded)
 
     return config
 
 
 def main():
-
-    """
-    if len(sys.argv) < 3:
-        print("Provide arguments\n")
-        print("main.py 'username' 'password'")
-
-        sys.exit(-1)
-
-    logger.info("simplenote_export running")
-
-    cred = Models.SimplenoteCredentials(sys.argv[1], sys.argv[2])
-    print("Username: %s" % (cred.username))
-    """
 
     if len(sys.argv) != 2:
         print("Provide argument")
@@ -217,9 +203,7 @@ def main():
         sys.exit(-1)
 
 
-    print("Hello")
-
-    # notes = get_simplenote_list(cred)
+    print("s20")
 
     config = load_config()
 
@@ -270,15 +254,12 @@ def main():
     # elif dev == 1:
     elif config.mode == "token":
         token.access_token = config.token
-
-        # onenote_mgr = OneNoteManager.OneNoteManager(config=config)
     else:
         token = onenote_mgr.fetch_token()
 
         config.token = token.access_token
 
     onenote_mgr = OneNoteManager.OneNoteManager(config=config)
-    # onenote_mgr.load_token(token)
 
     export_to_onenote(notes, onenote_mgr, chosen_notebook="Simplenote", chosen_section="From Simplenote")
     
