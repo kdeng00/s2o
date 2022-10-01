@@ -182,8 +182,22 @@ def export_to_onenote(simplenotes, onenote_mgr, chosen_notebook=None, chosen_sec
         simplenote_id = note.note_id
 
 
+def load_config():
+    filepath = sys.argv[1]
+
+    json_data = json.load(open(filepath))
+    dump = json.dumps(json_data)
+
+    loaded = json.loads(dump)
+    # config = Models.Config(**json.loads((json_data)))
+    config = Models.Config(**loaded)
+
+    return config
+
+
 def main():
 
+    """
     if len(sys.argv) < 3:
         print("Provide arguments\n")
         print("main.py 'username' 'password'")
@@ -193,11 +207,24 @@ def main():
     logger.info("simplenote_export running")
 
     cred = Models.SimplenoteCredentials(sys.argv[1], sys.argv[2])
-
     print("Username: %s" % (cred.username))
+    """
+
+    if len(sys.argv) != 2:
+        print("Provide argument")
+        print("Main.py \"config.json\"")
+
+        sys.exit(-1)
+
 
     print("Hello")
 
+    # notes = get_simplenote_list(cred)
+
+    config = load_config()
+
+    cred_ob = config.vendors['simplenote']
+    cred = Models.SimplenoteCredentials(cred_ob['username'], cred_ob['password'])
     notes = get_simplenote_list(cred)
 
     """
@@ -226,23 +253,32 @@ def main():
     15. Delete the Simplenote note
     """
 
-    onenote_mgr = OneNoteManager.OneNoteManager()
+    # onenote_mgr = OneNoteManager.OneNoteManager(config=config)
     
     dev = 1
 
     token = Models.ResponseToken()
 
-    if dev == 0:
+    # if dev == 0:
+    if config.mode == "token input":
         print("Enter token: ")
         token_input = input()
         token.access_token = token_input
-    elif dev == 1:
-        fi = io.open("token.txt")
-        token.access_token = fi.read()
+        config.token = token.access_token
+
+        # onenote_mgr = OneNoteManager.OneNoteManager(config=config)
+    # elif dev == 1:
+    elif config.mode == "token":
+        token.access_token = config.token
+
+        # onenote_mgr = OneNoteManager.OneNoteManager(config=config)
     else:
         token = onenote_mgr.fetch_token()
 
-    onenote_mgr.load_token(token)
+        config.token = token.access_token
+
+    onenote_mgr = OneNoteManager.OneNoteManager(config=config)
+    # onenote_mgr.load_token(token)
 
     export_to_onenote(notes, onenote_mgr, chosen_notebook="Simplenote", chosen_section="From Simplenote")
     

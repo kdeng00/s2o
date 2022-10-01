@@ -55,3 +55,22 @@ class OneNote(object):
     def __init__(self, title=None, content=None):
         self.title = title
         self.content = content
+
+
+
+class Config(object):
+    def __init__(self, token=None, secret=None, app_id=None, mode=None, scopes=None, authority_url=None, base_url=None, vendors=None) -> None:
+    # def __init__(self, token=None, secret=None, app_id=None, mode=None, scopes=None, authority_url=None, base_url=None) -> None:
+        self.token = token
+        self.secret = secret
+        self.app_id = app_id
+        self.mode = mode
+        self.scopes = scopes
+        self.authority_url = authority_url
+        self.base_url = base_url
+        self.vendors = vendors
+
+class Vendor(object):
+    def __init__(self, username=None, password=None) -> None:
+        self.username = username
+        self.password = password

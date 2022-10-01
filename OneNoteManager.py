@@ -10,8 +10,19 @@ import Models
 
 class OneNoteManager(object):
 
-    def __init__(self, token=None):
+    def __init__(self, token=None, config=None):
         self.token = token
+        self.config = config
+
+        self.initialize_onenote(self.config)
+
+    def initialize_onenote(self, config):
+        self.__APP_ID = config.app_id
+        self.__SECRET = config.secret
+        self.__SCOPES = config.scopes
+        self.__AUTHORITY_URL = config.authority_url
+        self.__base_url = config.base_url
+        self.__token = Models.ResponseToken(access_token=config.token)
 
     
     def __auth_header(self):
