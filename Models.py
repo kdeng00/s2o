@@ -1,4 +1,8 @@
 
+# from OneNoteManager import OneNoteManager
+import OneNoteManager
+
+
 class SimpleNote(object):
     def __init__(self, title=None, content=None):
         self.title = title
@@ -59,16 +63,34 @@ class OneNote(object):
 
 
 class Config(object):
-    def __init__(self, token=None, secret=None, app_id=None, mode=None, scopes=None, authority_url=None, base_url=None, vendors=None) -> None:
-    # def __init__(self, token=None, secret=None, app_id=None, mode=None, scopes=None, authority_url=None, base_url=None) -> None:
+    def __init__(self, token=None, secret=None, app_id=None, mode=None, scopes=None, authority_url=None, limit=None, interval=None, base_url=None, vendors=None) -> None:
         self.token = token
         self.secret = secret
         self.app_id = app_id
         self.mode = mode
         self.scopes = scopes
         self.authority_url = authority_url
+        self.limit = limit
+        self.interval = interval
         self.base_url = base_url
         self.vendors = vendors
+
+    
+    def token_init(self):
+        token = ResponseToken()
+
+        if self.mode == "token input":
+            print("Enter token: ")
+            token_input = input()
+            token.access_token = token_input
+            self.token = token.access_token
+        elif self.mode == "token":
+            token.access_token = self.token
+        else:
+            onenote_mgr = OneNoteManager(self)
+            token = onenote_mgr.fetch_token()
+
+        self.token = token.access_token
 
 class Vendor(object):
     def __init__(self, username=None, password=None, target_notebook=None, target_section=None) -> None:

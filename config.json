@@ -6,6 +6,8 @@
     "scopes": ["Create", "Read"],
     "authority_url": "https://some-link.com",
     "base_url": "https://some-other-link.com",
+    "limit": 100,
+    "interval": 300,
     "vendors": {
         "simplenote": {
             "username": "me",

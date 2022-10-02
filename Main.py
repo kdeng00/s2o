@@ -1,6 +1,6 @@
-import sys
-import io
 import json
+import sys
+import time
 
 import log21
 import simplenote
@@ -183,6 +183,12 @@ def export_to_onenote(simplenotes, onenote_mgr, chosen_notebook=None, chosen_sec
 
     count = 0
 
+    config = onenote_mgr.config
+    interval = config.interval
+    limit = config.limit
+    total_notes_added = 0
+    bundle_notes_added = 0
+
     for note in onenote_notes["value"]:
         count += 1
 
@@ -203,6 +209,18 @@ def export_to_onenote(simplenotes, onenote_mgr, chosen_notebook=None, chosen_sec
             cred.username = sn['username']
             cred.password = sn['password']
             delete_note(cred, note)
+        
+            if bundle_notes_added == limit:
+                if interval > 300:
+                    time.sleep(300)
+                else:
+                    time.sleep(interval)
+
+                bundle_notes_added = 0
+            else:
+                bundle_notes_added += 1
+
+            total_notes_added += 1
 
 
 
@@ -271,19 +289,7 @@ def main():
     14. [X] Delete the Simplenote note
     """
 
-    token = Models.ResponseToken()
-
-    if config.mode == "token input":
-        print("Enter token: ")
-        token_input = input()
-        token.access_token = token_input
-        config.token = token.access_token
-    elif config.mode == "token":
-        token.access_token = config.token
-    else:
-        token = onenote_mgr.fetch_token()
-
-        config.token = token.access_token
+    config.token_init()
 
     onenote_mgr = OneNoteManager.OneNoteManager(config=config)
 
@@ -292,8 +298,8 @@ def main():
     export_to_onenote(notes, onenote_mgr, chosen_notebook=chosen_notebook, chosen_section=chosen_section)
     
 
-logger = log21.get_logger('My Logger', level_names={21: 'SpecialInfo', log21.WARNING: ' ! ', log21.ERROR: '!!!'})
-logger.log(21, 'Here', '%s', 'GO!', args=('we',))
+# logger = log21.get_logger('My Logger', level_names={21: 'SpecialInfo', log21.WARNING: ' ! ', log21.ERROR: '!!!'})
+# logger.log(21, 'Here', '%s', 'GO!', args=('we',))
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,7 @@
 import json
-import webbrowser
+import os
 import subprocess
+import webbrowser
 
 import ast
 import msal
@@ -14,7 +15,8 @@ class OneNoteManager(object):
         self.token = token
         self.config = config
 
-        self.initialize_onenote(self.config)
+        if self.config != None:
+            self.initialize_onenote(self.config)
 
     def initialize_onenote(self, config):
         self.__APP_ID = config.app_id
@@ -132,8 +134,11 @@ class OneNoteManager(object):
         print('User code: %s' % (user_code))
         print("Enter code in browser to continue (Has been entered into clipboard)\n")
 
+        if os.name == "nt":
+            useless_cat_call = subprocess.run(["clip.exe"], stdout=subprocess.PIPE, text=True, input=user_code)
+        elif os.name == "posix":
+            useless_cat_call = subprocess.run(["clip.exe"], stdout=subprocess.PIPE, text=True, input=user_code)
 
-        useless_cat_call = subprocess.run(["clip.exe"], stdout=subprocess.PIPE, text=True, input=user_code)
 
         app_code = flow['message']
 
