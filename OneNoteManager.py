@@ -83,19 +83,22 @@ class OneNoteManager(object):
         return notes
 
     # Implement this function
-    def add_note(self, note):
+    def add_note(self, note, onenote_section):
+        section_id = onenote_section['id']
 
-        url = "https://graph.microsoft.com/v1.0/me/onenote/sections/{section-id}/pages"
+        url = f"https://graph.microsoft.com/v1.0/me/onenote/sections/{section_id}/pages"
 
-        data = {"dsfsdf", "sdfsdf"}
+        data = self.note_to_data(note)
         headers = self.__auth_header()
+        headers['Content-type'] = "application/xhtml+xml"
         req = requests.post(url, data=data, headers=headers)
         content = req.content
-        j_obj = content.decode("utf8").replace("'", '"')
+        j_obj = content.decode("utf8")
 
         json_data = json.dumps(j_obj)
 
-        print("Add")
+        if "error" not in json_data:
+            print("Added note '%s' to OneNote" % note.title)
 
         return json_data
     
@@ -107,9 +110,9 @@ class OneNoteManager(object):
         data =""
 
         if content_str == "":
-            data = f"<!DOCTYPE html><html><head><title>title_str</title></head> <body></body></html>"
+            data = f"<!DOCTYPE html><html><head><title>{title_str}</title></head> <body></body></html>"
         else:
-            data = f"<!DOCTYPE html><html><head><title>title_str</title></head> <body>content_str</body></html>"
+            data = f"<!DOCTYPE html><html><head><title>{title_str}</title></head> <body>{content_str}</body></html>"
 
         return data
 

@@ -26,10 +26,11 @@ def contains_title_and_content(content):
 def delete_note(cred, note):
     sn = simplenote.Simplenote(cred.username, cred.password)
 
-    print("Hehe!!")
-    return
+    # print("Hehe!!")
+    # return
 
-    sn.delete_note(note.note_id)
+    res = sn.delete_note(note.note_id)
+    print("Deleted '%s' from Simplenote" % note.title)
 
 
 def get_simplenote_list(cred):
@@ -56,12 +57,17 @@ def get_simplenote_list(cred):
                 # Parse the title from the content
                 #
                 # The title and content are delimited by '\n\n'
-                split = title.split("\n\n")
+                split = title.split("\r\n")
 
                 title = split[0]
 
                 split.remove(split[0])
-                content = "\n\n".join(split)
+
+                if len(split) == 1:
+                    content = split[0]
+                elif len(split) == 2:
+                    content = split[1]
+
 
             note = Models.SimpleNote(title, content)
             note.note_id = id
@@ -83,7 +89,7 @@ def is_valid_notebook(onenote_notebooks, chosen_notebook):
 
     notes = onenote_notebooks
 
-    for value in notes["value"]:
+    for value in notes['value']:
         display_name = value["displayName"]
 
         if display_name == chosen_notebook:
@@ -145,6 +151,12 @@ def is_valid_note(onenote_notes, onenote_section):
 
     return res
 
+def note_exists_in_onenote(note, onenote_notes):
+    for o_note in onenote_notes['value']:
+        if note.title == o_note['title']:
+            return True
+    
+    return False
 
 def export_to_onenote(simplenotes, onenote_mgr, chosen_notebook=None, chosen_section=None):
     onenote_notebooks = onenote_mgr.get_notebooks()
@@ -179,7 +191,20 @@ def export_to_onenote(simplenotes, onenote_mgr, chosen_notebook=None, chosen_sec
         return
 
     for note in simplenotes:
-        simplenote_id = note.note_id
+        if note_exists_in_onenote(note, onenote_notes):
+            continue
+
+        json_data = onenote_mgr.add_note(note, onenote_section)
+
+        if json_data != None or "error" not in json_data:
+            cred = Models.SimplenoteCredentials(username=None, password=None)
+            sn = onenote_mgr.config.vendors['simplenote']
+
+            cred.username = sn['username']
+            cred.password = sn['password']
+            delete_note(cred, note)
+
+
 
 
 def load_config():
@@ -207,6 +232,16 @@ def main():
 
     config = load_config()
 
+    if config.vendors == None or config.vendors['onenote'] == None:
+        print("No vendor or onenote section")
+        sys.exit(-1)
+    
+    o_note = config.vendors['onenote']
+
+    if o_note['target_notebook'] == None or o_note['target_section'] == None:
+        print("Notebook or section is empty")
+        sys.exit(-1)
+
     cred_ob = config.vendors['simplenote']
     cred = Models.SimplenoteCredentials(cred_ob['username'], cred_ob['password'])
     notes = get_simplenote_list(cred)
@@ -228,30 +263,21 @@ def main():
     6. [X] Get OneNote Notes (By section id and check to see if there is a @data.nextLink)
     7. [X] Check to see if the notes are part of the section
     8. [X] Get a list of OneNote notes that's part of the section
-    9. Iterate through Simplenote notes
-    10. Check to see if a OneNote note exists that comes from the selected notebook and section. Terminate if not
-    11. Check to see if the iterated Simplenote note exists in OneNote with the matched criteria. Terminate if so
-    12. Create page in OneNote using the iterated Simplenote note
-    13. Retrieve the OneNote pages again
-    14. Check to see if the page has been created
-    15. Delete the Simplenote note
+    9. [X] Iterate through Simplenote notes
+    10. [X] Check to see if a OneNote note exists that comes from the selected notebook and section. Terminate if not
+    11. [X] Create page in OneNote using the iterated Simplenote note
+    12. [X] Retrieve the OneNote pages again
+    13. [X] Check to see if the page has been created
+    14. [X] Delete the Simplenote note
     """
-
-    # onenote_mgr = OneNoteManager.OneNoteManager(config=config)
-    
-    dev = 1
 
     token = Models.ResponseToken()
 
-    # if dev == 0:
     if config.mode == "token input":
         print("Enter token: ")
         token_input = input()
         token.access_token = token_input
         config.token = token.access_token
-
-        # onenote_mgr = OneNoteManager.OneNoteManager(config=config)
-    # elif dev == 1:
     elif config.mode == "token":
         token.access_token = config.token
     else:
@@ -261,11 +287,10 @@ def main():
 
     onenote_mgr = OneNoteManager.OneNoteManager(config=config)
 
-    export_to_onenote(notes, onenote_mgr, chosen_notebook="Simplenote", chosen_section="From Simplenote")
+    chosen_notebook = config.vendors['onenote']['target_notebook']
+    chosen_section = config.vendors['onenote']['target_section']
+    export_to_onenote(notes, onenote_mgr, chosen_notebook=chosen_notebook, chosen_section=chosen_section)
     
-
-    # iterate_simplenotes(notes)
-
 
 logger = log21.get_logger('My Logger', level_names={21: 'SpecialInfo', log21.WARNING: ' ! ', log21.ERROR: '!!!'})
 logger.log(21, 'Here', '%s', 'GO!', args=('we',))
