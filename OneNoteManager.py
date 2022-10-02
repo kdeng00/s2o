@@ -84,7 +84,7 @@ class OneNoteManager(object):
 
         return notes
 
-    # Implement this function
+    # add note to OneNote
     def add_note(self, note, onenote_section):
         section_id = onenote_section['id']
 
@@ -106,8 +106,8 @@ class OneNoteManager(object):
     
     # Returns string representation of the note used for creating pages
     def note_to_data(self, note):
-        title_str = note.title
-        content_str = note.content
+        title_str = note.title.decode("utf-8", "ignore")
+        content_str = note.content.decode("utf-8", "ignore")
 
         data =""
 
@@ -136,9 +136,6 @@ class OneNoteManager(object):
 
         if os.name == "nt":
             useless_cat_call = subprocess.run(["clip.exe"], stdout=subprocess.PIPE, text=True, input=user_code)
-        elif os.name == "posix":
-            useless_cat_call = subprocess.run(["clip.exe"], stdout=subprocess.PIPE, text=True, input=user_code)
-
 
         app_code = flow['message']
 

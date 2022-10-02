@@ -216,11 +216,17 @@ def export_to_onenote(simplenotes, onenote_mgr, chosen_notebook=None, chosen_sec
                 else:
                     time.sleep(interval)
 
+                config = load_config()
+                onenote_mgr.config = config
+
                 bundle_notes_added = 0
             else:
                 bundle_notes_added += 1
 
             total_notes_added += 1
+    
+    if total_notes_added > 0:
+        print("Deleted %d notes" % (total_notes_added))
 
 
 
