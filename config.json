@@ -16,8 +16,8 @@
         "onenote": {
             "username": "",
             "password": "",
-            "source_notebook": "New notebook",
-            "source_section": "New Section"
+            "target_notebook": "New notebook",
+            "target_section": "New Section"
         }
     }
 }
