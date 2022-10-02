@@ -177,17 +177,13 @@ def export_to_onenote(simplenotes, onenote_mgr, chosen_notebook=None, chosen_sec
         print("Section not found for '%s'" % (chosen_section))
         return
 
+    config = onenote_mgr.config
+
     onenote_section = retrieve_section(onenote_sections, chosen_section)
-    url="https://graph.microsoft.com/v1.0/me/onenote/sections/" + onenote_section["id"] + "/pages"
+    url = f"{config.base_url}me/onenote/sections/" + onenote_section["id"] + "/pages"
     onenote_notes = onenote_mgr.get_notes(url)
 
     count = 0
-
-    config = onenote_mgr.config
-    interval = config.interval
-    limit = config.limit
-    total_notes_added = 0
-    bundle_notes_added = 0
 
     for note in onenote_notes["value"]:
         count += 1
@@ -195,6 +191,11 @@ def export_to_onenote(simplenotes, onenote_mgr, chosen_notebook=None, chosen_sec
     if not is_valid_note(onenote_notes, onenote_section):
         print("Note not foudn for '%s'" % (chosen_section))
         return
+
+    interval = config.interval
+    limit = config.limit
+    total_notes_added = 0
+    bundle_notes_added = 0
 
     for note in simplenotes:
         if note_exists_in_onenote(note, onenote_notes):
@@ -218,6 +219,7 @@ def export_to_onenote(simplenotes, onenote_mgr, chosen_notebook=None, chosen_sec
 
                 config = load_config()
                 onenote_mgr.config = config
+                onenote_notes = onenote_mgr.get_notes(url)
 
                 bundle_notes_added = 0
             else:
