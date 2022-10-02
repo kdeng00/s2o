@@ -71,6 +71,8 @@ class Config(object):
         self.vendors = vendors
 
 class Vendor(object):
-    def __init__(self, username=None, password=None) -> None:
+    def __init__(self, username=None, password=None, source_notebook=None, source_section=None) -> None:
         self.username = username
         self.password = password
+        self.source_notebook = source_notebook
+        self.source_section = source_section

@@ -9,7 +9,15 @@
     "vendors": {
         "simplenote": {
             "username": "me",
-            "password": "who"
+            "password": "who",
+            "source_notebook": "",
+            "source_section": ""
+        },
+        "onenote": {
+            "username": "",
+            "password": "",
+            "source_notebook": "New notebook",
+            "source_section": "New Section"
         }
     }
 }
